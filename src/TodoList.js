@@ -15,16 +15,47 @@ class TodoList extends Component {
     this.handleDel = this.handleDel.bind(this);
   }
 
+  // 在组件即将被挂载到页面的时刻自动执行
+    componentWillMount() {
+    console.log('componentWillMount')
+    }
+
+  // 在组件被挂载到页面的时刻自动执行  一般在此生命周期里写请求接口
+    componentDidMount() {
+    console.log('componentDidMount')
+    }
+
+
+  // 在组件被更新之前自动执行 返回 布尔值
+    shouldComponentUpdate() {
+    console.log('shouldComponentUpdate');
+    return true;
+    }
+
+  // 在组件被更新之前，且在shouldComponentUpdate 返回true 后会自动执行，false不执行  render在更新生命周期后才执行
+    componentWillUpdate() {
+    console.log('componentWillUpdate');
+    }
+
+    // 在组件被更新之后自动执行 在render之后
+    componentDidUpdateUpdate() {
+        console.log('componentDidUpdateUpdate');
+    }
+
+
   render() {
-    return (
+      console.log('render');
+      return (
       <Fragment>
         <h1>TodoList</h1>
-        <div><label htmlFor="in">任务名称</label><input id="in" value={this.state.inputValue}
+        <div><label htmlFor="in">任务名称</label>
+          <input id="in" value={this.state.inputValue}
                     onChange={this.handleInputChange}
+                 ref={(input) => {this.input = input}}
                     type="text"/>
           <button onClick={this.addData}>添加</button>
         </div>
-        <ul>{this.getTodoItem()} </ul>
+        <ul ref={(ul) =>{this.ul = ul}}>{this.getTodoItem()} </ul>
       </Fragment>
     )
   }
@@ -37,6 +68,7 @@ class TodoList extends Component {
   }
   handleInputChange(e) {
     const val = e.target.value;
+    // const val = this.input.value; // 也可以这样写 ref
     this.setState(() =>({inputValue: val}));
     console.log(e.target.value);
   }
@@ -46,7 +78,9 @@ class TodoList extends Component {
     this.setState((prevState) =>({
       list: [...this.state.list, this.state.inputValue],// 两种写法 list: [...prevState.list, prevState.inputValue],
       inputValue: ''
-    }));
+    }),() => {// setState 的异步回调
+        console.log(this.ul.querySelectorAll('li').length);
+    });
   }
 
   handleDel(i) {
