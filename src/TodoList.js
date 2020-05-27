@@ -2,6 +2,9 @@ import React, {Component, Fragment} from 'react';
 import TodoItem from './TodoItem';
 // import './App.css';
 
+import {Input ,List, Typography, Divider} from 'antd';
+
+
 class TodoList extends Component {
 
   constructor(props) {
@@ -15,47 +18,78 @@ class TodoList extends Component {
     this.handleDel = this.handleDel.bind(this);
   }
 
+
   // 在组件即将被挂载到页面的时刻自动执行
-    componentWillMount() {
+  /*componentWillMount() {
     console.log('componentWillMount')
-    }
+  }
 
   // 在组件被挂载到页面的时刻自动执行  一般在此生命周期里写请求接口
-    componentDidMount() {
+  componentDidMount() {
     console.log('componentDidMount')
-    }
+  }
 
 
   // 在组件被更新之前自动执行 返回 布尔值
-    shouldComponentUpdate() {
+  shouldComponentUpdate() {
     console.log('shouldComponentUpdate');
     return true;
-    }
+  }
 
   // 在组件被更新之前，且在shouldComponentUpdate 返回true 后会自动执行，false不执行  render在更新生命周期后才执行
-    componentWillUpdate() {
+  componentWillUpdate() {
     console.log('componentWillUpdate');
-    }
+  }
 
-    // 在组件被更新之后自动执行 在render之后
-    componentDidUpdateUpdate() {
-        console.log('componentDidUpdateUpdate');
-    }
+  // 在组件被更新之后自动执行 在render之后
+  componentDidUpdateUpdate() {
+    console.log('componentDidUpdateUpdate');
+  }*/
 
 
   render() {
-      console.log('render');
-      return (
+    const {Search} = Input;
+
+    console.log('render');
+    return (
       <Fragment>
         <h1>TodoList</h1>
         <div><label htmlFor="in">任务名称</label>
-          <input id="in" value={this.state.inputValue}
-                    onChange={this.handleInputChange}
-                 ref={(input) => {this.input = input}}
-                    type="text"/>
-          <button onClick={this.addData}>添加</button>
+          {/*<input id="in" value={this.state.inputValue}
+                 onChange={this.handleInputChange}
+                 ref={(input) => {
+                   this.input = input
+                 }}
+                 type="text"/>
+          <button onClick={this.addData}>添加</button>*/}
+          <Search
+            style={{width:300}}
+            placeholder="input  text"
+            enterButton="Add"
+            size="large"
+            value={this.state.inputValue}
+            onChange={this.handleInputChange}
+            allowClear
+            onSearch={value => this.addData(value)}
+          />
         </div>
-        <ul ref={(ul) =>{this.ul = ul}}>{this.getTodoItem()} </ul>
+        <Divider orientation="left">TodoList 清单</Divider>
+        <List
+          style={{width:300}}
+          header={<div>各项待完成工作</div>}
+          footer={<div>今日事，今日毕</div>}
+          bordered
+          dataSource={this.state.list}
+          renderItem={item => (
+            <List.Item>
+              <Typography.Text mark>[ITEM]</Typography.Text> {item}
+            </List.Item>
+          )}
+        />
+
+        {/*<ul ref={(ul) => {
+          this.ul = ul
+        }}>{this.getTodoItem()} </ul>*/}
       </Fragment>
     )
   }
@@ -66,20 +100,21 @@ class TodoList extends Component {
       }
     )
   }
+
   handleInputChange(e) {
     const val = e.target.value;
     // const val = this.input.value; // 也可以这样写 ref
-    this.setState(() =>({inputValue: val}));
+    this.setState(() => ({inputValue: val}));
     console.log(e.target.value);
   }
 
-  addData() {
-    if (!this.state.inputValue) return;
-    this.setState((prevState) =>({
-      list: [...this.state.list, this.state.inputValue],// 两种写法 list: [...prevState.list, prevState.inputValue],
+  addData(val) {
+    if (!val) return;
+    this.setState((prevState) => ({
+      list: [...this.state.list, val],// 两种写法 list: [...prevState.list, prevState.inputValue],
       inputValue: ''
-    }),() => {// setState 的异步回调
-        console.log(this.ul.querySelectorAll('li').length);
+    }), () => {// setState 的异步回调
+      // console.log(this.ul.querySelectorAll('li').length);
     });
   }
 
@@ -88,14 +123,14 @@ class TodoList extends Component {
     let res = window.confirm('are u ready?...del');
     if (res) {
       /*immutable 不允许state直接做改变，后期优化有影响*/
-    /*  const List = this.state.list;
-      List.splice(i,1);
-      this.setState(() =>({list: List}));*/
+      /*  const List = this.state.list;
+        List.splice(i,1);
+        this.setState(() =>({list: List}));*/
 
-    //优化 后
-      this.setState((prevState) =>{
+      //优化 后
+      this.setState((prevState) => {
         const list = [...prevState.list];
-        list.splice(i,1);
+        list.splice(i, 1);
         return {list};
       })
     }

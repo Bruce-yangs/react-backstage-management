@@ -12,13 +12,13 @@ class TodoItem extends Component {
     // 只要父组件的render函数被重新执行了,子组件的这个生命周期函数就会被执行
     // 如果该组件第一次存在于父组件中，不会被执行
     // 如果之前存在，才会被执行
-    componentWillReceiveProps() {
+    /*componentWillReceiveProps() {
         console.log('componentWillReceiveProps');
     }
     // 移除，才会被执行
     componentWillUnmount() {
         console.log('componentWillUnmount');
-    }
+    }*/
     // 在组件被更新之前自动执行 返回 布尔值
     shouldComponentUpdate(nextProps,nextState) {
         if (nextProps.item !== this.props.item) {
@@ -26,7 +26,7 @@ class TodoItem extends Component {
         } else {
             return false;
         }
-        console.log('TodoItem--- shouldComponentUpdate');
+        // console.log('TodoItem--- shouldComponentUpdate');
     }
     render() {
         const {item} = this.props;
