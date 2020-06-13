@@ -19,6 +19,10 @@ class TodoList extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.addData = this.addData.bind(this);
         this.handleDel = this.handleDel.bind(this);
+        this.handleStoreChange = this.handleStoreChange.bind(this);
+
+        // 订阅
+        store.subscribe(this.handleStoreChange);
         console.log(store.getState());
         console.log(store);
     }
@@ -108,19 +112,43 @@ class TodoList extends Component {
 
     handleInputChange(e) {
         const val = e.target.value;
+
+        const action = {
+            type:'change_input_value',
+            value: val
+        };
+        store.dispatch(action);
+        // console.log(val);
         // const val = this.input.value; // 也可以这样写 ref
-        this.setState(() => ({inputValue: val}));
-        console.log(e.target.value);
+
+        // this.setState(() => ({inputValue: val}));
+        // console.log(e.target.value);
+    }
+
+    handleStoreChange(e) {
+
+        this.setState(store.getState);
+
     }
 
     addData(val) {
         if (!val) return;
-        this.setState((prevState) => ({
+
+        const action = {
+            type:'add_todo_item'
+        };
+        store.dispatch(action);
+
+
+
+
+        /*this.setState((prevState) => ({
             list: [...this.state.list, val],// 两种写法 list: [...prevState.list, prevState.inputValue],
             inputValue: ''
         }), () => {// setState 的异步回调
             // console.log(this.ul.querySelectorAll('li').length);
-        });
+        });*/
+
     }
 
     handleDel(i) {
