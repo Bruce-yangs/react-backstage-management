@@ -1,10 +1,11 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import TodoItem from './TodoItem';
+import TodoListUI from './TodoListUI';
 import './App.css';
 import store from './store';
-
-import {Input, List, Typography, Divider} from 'antd';
-
+import {getInputChangeAction,getAddDataAction ,getDelAction} from './store/actionCreators';
+import { Modal} from 'antd';
+import {  ExclamationCircleOutlined } from '@ant-design/icons';
 
 class TodoList extends Component {
 
@@ -19,12 +20,15 @@ class TodoList extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.addData = this.addData.bind(this);
         this.handleDel = this.handleDel.bind(this);
+        this.handleDelItem = this.handleDelItem.bind(this);
         this.handleStoreChange = this.handleStoreChange.bind(this);
 
         // 订阅
         store.subscribe(this.handleStoreChange);
         console.log(store.getState());
         console.log(store);
+
+
     }
 
 
@@ -57,49 +61,15 @@ class TodoList extends Component {
 
 
     render() {
-        const {Search} = Input;
-
         console.log('render');
         return (
-            <Fragment>
-                <h1>TodoList</h1>
-                <div><label htmlFor="in">任务名称</label>
-                    {/*<input id="in" value={this.state.inputValue}
-                     onChange={this.handleInputChange}
-                     ref={(input) => {
-                     this.input = input
-                     }}
-                     type="text"/>
-                     <button onClick={this.addData}>添加</button>*/}
-                    <Search
-                        style={{width: 300}}
-                        placeholder="input  text"
-                        enterButton="Add"
-                        size="large"
-                        value={this.state.inputValue}
-                        onChange={this.handleInputChange}
-                        allowClear
-                        onSearch={value => this.addData(value)}
-                    />
-                </div>
-                <Divider orientation="left">TodoList 清单</Divider>
-                <List
-                    style={{width: 300}}
-                    header={<div>各项待完成工作</div>}
-                    footer={<div>今日事，今日毕</div>}
-                    bordered
-                    dataSource={this.state.list}
-                    renderItem={item => (
-                        <List.Item className="break">
-                            <Typography.Text mark>[ITEM]</Typography.Text> {item}
-                        </List.Item>
-                    )}
-                />
-
-                {/*<ul ref={(ul) => {
-                 this.ul = ul
-                 }}>{this.getTodoItem()} </ul>*/}
-            </Fragment>
+          <TodoListUI inputValue={this.state.inputValue}
+                      handleInputChange={this.handleInputChange}
+                      handleDelItem={this.handleDelItem}
+                      handleDel={this.handleDel}
+                      addData={this.addData}
+                      list={this.state.list}
+          />
         )
     }
 
@@ -113,11 +83,15 @@ class TodoList extends Component {
     handleInputChange(e) {
         const val = e.target.value;
 
-        const action = {
-            type:'change_input_value',
+        const action = getInputChangeAction(val);
+
+        /*const action = {
+            type: CHANGE_INPUT_VALUE,
             value: val
-        };
+        };*/
+
         store.dispatch(action);
+
         // console.log(val);
         // const val = this.input.value; // 也可以这样写 ref
 
@@ -125,22 +99,22 @@ class TodoList extends Component {
         // console.log(e.target.value);
     }
 
+    // 感知数据变化，同步store数据
     handleStoreChange(e) {
-
-        this.setState(store.getState);
+      console.log('xxxx');
+      this.setState(store.getState);
 
     }
 
+    /*新增*/
     addData(val) {
         if (!val) return;
 
-        const action = {
-            type:'add_todo_item'
-        };
+        const action = getAddDataAction();
+        /*const action = {
+            type:ADD_TODO_ITEM
+        };*/
         store.dispatch(action);
-
-
-
 
         /*this.setState((prevState) => ({
             list: [...this.state.list, val],// 两种写法 list: [...prevState.list, prevState.inputValue],
@@ -151,23 +125,43 @@ class TodoList extends Component {
 
     }
 
-    handleDel(i) {
-        console.log(i);
-        let res = window.confirm('are u ready?...del');
-        if (res) {
+    /*删除*/
+    handleDelItem(index) {
+        console.log(index);
             /*immutable 不允许state直接做改变，后期优化有影响*/
             /*  const List = this.state.list;
              List.splice(i,1);
              this.setState(() =>({list: List}));*/
 
+          //通过redux删除
+          const action = getDelAction(index);
+          /*const action = {
+            type: DELETE_TODO_ITEM,
+            index
+          }*/
+          store.dispatch(action);
+
+
             //优化 后
-            this.setState((prevState) => {
+            /*this.setState((prevState) => {
                 const list = [...prevState.list];
-                list.splice(i, 1);
+                list.splice(index, 1);
                 return {list};
-            })
-        }
+            })*/
+
     }
+
+    // 确认删除
+  handleDel(index) {
+    Modal.confirm({
+      title: '提示',
+      icon: <ExclamationCircleOutlined />,
+      content: '确定要删除该工作任务吗？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk:()=>{this.handleDelItem(index)},
+    });
+  }
 }
 
 
