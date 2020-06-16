@@ -3,8 +3,9 @@ import TodoItem from './TodoItem';
 import TodoListUI from './TodoListUI';
 import './App.css';
 import store from './store';
-import {getInputChangeAction,getAddDataAction ,getDelAction} from './store/actionCreators';
+import {getInputChangeAction,getAddDataAction ,getDelAction,initListAction} from './store/actionCreators';
 import { Modal} from 'antd';
+import axios from 'axios';
 import {  ExclamationCircleOutlined } from '@ant-design/icons';
 
 class TodoList extends Component {
@@ -30,6 +31,16 @@ class TodoList extends Component {
 
 
     }
+
+  componentWillMount() {
+    axios.get('/api/backstage/authCode').then(res => {
+    // axios.get('/api/list.json').then(res => {
+      console.log(res);
+      /*const action = initListAction(res.data);
+      store.dispatch(action);*/
+    })
+    console.log('componentWillMount')
+  }
 
 
     // 在组件即将被挂载到页面的时刻自动执行
