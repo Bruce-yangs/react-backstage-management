@@ -1,11 +1,10 @@
-import React, {Component} from 'react';
+import React, {Component,Fragment} from 'react';
 import TodoItem from './TodoItem';
 import TodoListUI from './TodoListUI';
 import './App.css';
 import store from './store';
 import {getInputChangeAction,getAddDataAction ,getDelAction,initListAction} from './store/actionCreators';
 import { Modal} from 'antd';
-import axios from 'axios';
 import {  ExclamationCircleOutlined } from '@ant-design/icons';
 
 class TodoList extends Component {
@@ -17,27 +16,29 @@ class TodoList extends Component {
          list: []
          }*/
         this.state = store.getState();
-
+      this.state.img = '';
         this.handleInputChange = this.handleInputChange.bind(this);
         this.addData = this.addData.bind(this);
         this.handleDel = this.handleDel.bind(this);
         this.handleDelItem = this.handleDelItem.bind(this);
         this.handleStoreChange = this.handleStoreChange.bind(this);
+        this.handleImage = this.handleImage.bind(this);
 
         // 订阅
         store.subscribe(this.handleStoreChange);
         console.log(store.getState());
         console.log(store);
 
-
     }
 
   componentWillMount() {
-    axios.get('/api/backstage/authCode').then(res => {
-    // axios.get('/api/list.json').then(res => {
+    React.get('/backstage/authCode').then(res => {
+      const {authCode} = res.data;
+      let _src = 'data:image/jpg;base64,'+authCode;
+      this.setState({
+        img:_src
+      })
       console.log(res);
-      /*const action = initListAction(res.data);
-      store.dispatch(action);*/
     })
     console.log('componentWillMount')
   }
@@ -74,13 +75,16 @@ class TodoList extends Component {
     render() {
         console.log('render');
         return (
-          <TodoListUI inputValue={this.state.inputValue}
-                      handleInputChange={this.handleInputChange}
-                      handleDelItem={this.handleDelItem}
-                      handleDel={this.handleDel}
-                      addData={this.addData}
-                      list={this.state.list}
-          />
+          <Fragment>
+            <TodoListUI inputValue={this.state.inputValue}
+                        handleInputChange={this.handleInputChange}
+                        handleDelItem={this.handleDelItem}
+                        handleDel={this.handleDel}
+                        addData={this.addData}
+                        list={this.state.list}
+            />
+            <img src={this.state.img} onClick={this.handleImage} alt=""/>
+          </Fragment>
         )
     }
 
@@ -162,6 +166,18 @@ class TodoList extends Component {
 
     }
 
+    /*改变img*/
+
+  handleImage() {
+    React.get('/backstage/authCode').then(res => {
+      const {authCode} = res.data;
+      let _src = 'data:image/jpg;base64,'+authCode;
+      this.setState({
+        img:_src
+      })
+      console.log(res);
+    })
+  }
     // 确认删除
   handleDel(index) {
     Modal.confirm({
