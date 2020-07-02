@@ -6,7 +6,8 @@ import {CHANGE_INPUT_VALUE, ADD_TODO_ITEM ,DELETE_TODO_ITEM,INIT_LIST_ACTION} fr
 const defaultState = {
     inputValue: '杨坤最帅',
     list: ['哈哈好好学习','学习使我快乐','宸宸最棒'],
-    visible:false
+    visible:false,
+    img:""
 }
 // reducer 查询数据
 export default (state = defaultState, action) => {
@@ -23,14 +24,16 @@ export default (state = defaultState, action) => {
         return newState;
     }
     if (action.type ===  DELETE_TODO_ITEM) {
-        const newState = JSON.parse(JSON.stringify(state));
+      console.log(action);
+
+      const newState = JSON.parse(JSON.stringify(state));
         newState.list.splice(action.index,1);
         return newState;
     }
     // 请求数据同步state
     if (action.type ===  INIT_LIST_ACTION) {
-        const newState = JSON.parse(JSON.stringify(state));
-        newState.list = action.data;
+      const newState = JSON.parse(JSON.stringify(state));
+        newState.img = action.data;
         return newState;
     }
     console.log(state, action);

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Component } from "react";
 
 let pending = []; //声明一个数组用于存储每个ajax请求的取消函数和ajax标识
 let cancelToken = axios.CancelToken;

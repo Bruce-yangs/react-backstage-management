@@ -3,7 +3,7 @@ import TodoItem from './TodoItem';
 import TodoListUI from './TodoListUI';
 import './App.css';
 import store from './store';
-import {getInputChangeAction,getAddDataAction ,getDelAction,initListAction} from './store/actionCreators';
+import {getInputChangeAction,getAddDataAction ,getDelAction/*,initListAction,getImgCode*/,getInitAction} from './store/actionCreators';
 import { Modal} from 'antd';
 import {  ExclamationCircleOutlined } from '@ant-design/icons';
 
@@ -16,7 +16,7 @@ class TodoList extends Component {
          list: []
          }*/
         this.state = store.getState();
-      this.state.img = '';
+        this.state.img = '';
         this.handleInputChange = this.handleInputChange.bind(this);
         this.addData = this.addData.bind(this);
         this.handleDel = this.handleDel.bind(this);
@@ -32,14 +32,27 @@ class TodoList extends Component {
     }
 
   componentWillMount() {
-    React.get('/backstage/authCode').then(res => {
+
+      const action = getInitAction();
+      store.dispatch(action);
+    console.log(action);
+    /*redux-thunk*/
+      /*const action = getImgCode();
+      store.dispatch(action);*/
+
+
+    /*React.get('/backstage/authCode').then(res => {
       const {authCode} = res.data;
       let _src = 'data:image/jpg;base64,'+authCode;
+    /!*  const action = initListAction(authCode);
+      store.dispatch(action);
+      console.log(action);
+    *!/
       this.setState({
         img:_src
       })
       console.log(res);
-    })
+    })*/
     console.log('componentWillMount')
   }
 
