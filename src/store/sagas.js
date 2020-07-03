@@ -7,10 +7,11 @@ import React from 'react';
 function* getInitList() {
   try {
     const res = yield React.get('/backstage/authCode');
-    const action = initListAction(res.data);
+    const {authCode} = res.data;
+    let _src = 'data:image/jpg;base64,'+authCode;
+    const action = initListAction(_src);
     yield put(action);
-    console.log(action);
-  }catch (e) {
+  } catch (e) {
     console.log('网络连接失败');
   }
 }

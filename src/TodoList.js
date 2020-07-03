@@ -6,6 +6,8 @@ import store from './store';
 import {getInputChangeAction,getAddDataAction ,getDelAction/*,initListAction,getImgCode*/,getInitAction} from './store/actionCreators';
 import { Modal} from 'antd';
 import {  ExclamationCircleOutlined } from '@ant-design/icons';
+import {connect} from 'react-redux';
+import {ADD_TODO_ITEM} from "./store/actionTypes";
 
 class TodoList extends Component {
 
@@ -16,7 +18,6 @@ class TodoList extends Component {
          list: []
          }*/
         this.state = store.getState();
-        this.state.img = '';
         this.handleInputChange = this.handleInputChange.bind(this);
         this.addData = this.addData.bind(this);
         this.handleDel = this.handleDel.bind(this);
@@ -35,7 +36,8 @@ class TodoList extends Component {
 
       const action = getInitAction();
       store.dispatch(action);
-    console.log(action);
+     console.log(action);
+
     /*redux-thunk*/
       /*const action = getImgCode();
       store.dispatch(action);*/
@@ -89,6 +91,7 @@ class TodoList extends Component {
         console.log('render');
         return (
           <Fragment>
+            <div onClick={this.props.onclickText('haha')}>{this.props.inputValue}</div>
             <TodoListUI inputValue={this.state.inputValue}
                         handleInputChange={this.handleInputChange}
                         handleDelItem={this.handleDelItem}
@@ -205,4 +208,25 @@ class TodoList extends Component {
 }
 
 
-export default TodoList;
+
+const mapStateToProps = (state) => {
+  return {
+    inputValue: state.inputValue
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+  onclickText(e) {
+    console.log(e);
+      const action = {
+        type: ADD_TODO_ITEM,
+      }
+    }
+  }
+}
+
+
+//connect 和store作连接
+export default connect(mapStateToProps,mapDispatchToProps)(TodoList);
+// export default TodoList;

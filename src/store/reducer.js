@@ -3,6 +3,7 @@
  */
 import {CHANGE_INPUT_VALUE, ADD_TODO_ITEM ,DELETE_TODO_ITEM,INIT_LIST_ACTION} from './actionTypes';
 
+//初始值
 const defaultState = {
     inputValue: '杨坤最帅',
     list: ['哈哈好好学习','学习使我快乐','宸宸最棒'],
