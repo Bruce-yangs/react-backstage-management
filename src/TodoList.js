@@ -226,7 +226,6 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-
 //connect 和store作连接
 export default connect(mapStateToProps,mapDispatchToProps)(TodoList);
 // export default TodoList;
